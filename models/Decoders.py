@@ -201,13 +201,13 @@ class HyperTransformerBlock(nn.Module):
         K_psi = torch.flatten(K_psi, start_dim=-2, end_dim=-1)
 
         if self.hyper_dim == 4:
-            Score = (Quaternion(Q_phi).multiply(Quaternion(K_psi))).tensor[:, 0, :] / (self.max_len * (self.input_dim**0.5))
+            Score = (Quaternion(Q_phi).multiply(Quaternion(K_psi))).tensor[:, 0, :] / ((self.input_dim**0.5))
         elif self.hyper_dim == 8:
-            Score = (Octonion(Q_phi).multiply(Octonion(K_psi))).tensor[:, 0, :] / (self.max_len * (self.input_dim**0.5))
+            Score = (Octonion(Q_phi).multiply(Octonion(K_psi))).tensor[:, 0, :] / ((self.input_dim**0.5))
         elif self.hyper_dim == 2:
-            Score = (Complex(Q_phi).multiply(Complex(K_psi))).tensor[:, 0, :] / (self.max_len * (self.input_dim**0.5))
+            Score = (Complex(Q_phi).multiply(Complex(K_psi))).tensor[:, 0, :] / ((self.input_dim**0.5))
         elif self.hyper_dim == 16:
-            Score = (Sedenion(Q_phi).multiply(Sedenion(K_psi))).tensor[:, 0, :] / (self.max_len * (self.input_dim**0.5))
+            Score = (Sedenion(Q_phi).multiply(Sedenion(K_psi))).tensor[:, 0, :] / ((self.input_dim**0.5))
         else:
             print('hyper_dim ', self.hyper_dim, ' illegal.')
         Score = Score.view(original_Q_phi_shape[0], original_Q_phi_shape[-2], original_Q_phi_shape[-1])
