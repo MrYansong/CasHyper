@@ -135,7 +135,9 @@ def train_model(data_path):
         model = model.to(DEVICE)
         criterion = criterion.to(DEVICE)
     
-    validation_history = 0.0
+    test_history = 0.0
+    val_history = 0.0
+    patience = 0.0
     best_scores = {}
     for epoch_i in range(opt.epoch):
         print('\n[ Epoch', epoch_i, ']')
@@ -154,6 +156,14 @@ def train_model(data_path):
             for metric in val_scores.keys():
                 print(metric + ' ' + str(val_scores[metric]))
             print("Validation use time: ", (time.time() - start) / 60, "min")
+            if val_history <= sum(val_scores.values()):
+                val_history = sum(val_scores.values())
+                patience = 0.0
+            else:
+                patience += 1
+                if patience == 50:
+                    print('Early stopping! ')
+                    break
 
             # test the model
             print('  - (Test) ')
@@ -161,9 +171,9 @@ def train_model(data_path):
             for metric in scores.keys():
                 print(metric + ' ' + str(scores[metric]))
             
-            if validation_history <= sum(scores.values()):
+            if test_history <= sum(scores.values()):
                 print("Best Validation hit@100:{} at Epoch:{}".format(scores["hits@100"], epoch_i))
-                validation_history = sum(scores.values())
+                test_history = sum(scores.values())
                 best_scores = scores
                 print("Save best model!!!") 
 
